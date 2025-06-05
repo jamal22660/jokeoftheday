@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Joke of the Day 😂</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #fefefc;
+      --text-light: #333;
+      --card-light: #ffffff;
+      --shadow-light: rgba(0, 0, 0, 0.08);
+
+      --bg-dark: #121212;
+      --text-dark: #e0e0e0;
+      --card-dark: #1e1e1e;
+      --shadow-dark: rgba(255, 255, 255, 0.05);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.4s, color 0.4s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .dark-mode {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .card {
+      background-color: var(--card-light);
+      color: var(--text-light);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 10px 30px var(--shadow-light);
+      text-align: center;
+      transition: background-color 0.4s, color 0.4s, box-shadow 0.4s;
+    }
+
+    .dark-mode .card {
+      background-color: var(--card-dark);
+      color: var(--text-dark);
+      box-shadow: 0 10px 30px var(--shadow-dark);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+
+    .joke {
+      font-size: 1.3rem;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    button {
+      margin: 6px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-copy {
+      background-color: #bae8e8;
+      color: #004e64;
+    }
+
+    .btn-share {
+      background-color: #ffd6a5;
+      color: #5f370e;
+    }
+
+    .btn-theme {
+      background-color: #caffbf;
+      color: #355e00;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>😂 Joke of the Day</h1>
+    <div id="joke" class="joke">Loading joke...</div>
+    <button class="btn-copy" onclick="copyJoke()">Copy Joke</button>
+    <button class="btn-share" onclick="shareJoke()">Share</button>
+    <button class="btn-theme" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+
+  <script>
+    const jokeEl = document.getElementById("joke");
+
+    async function fetchJoke() {
+      try {
+        const res = await fetch("https://icanhazdadjoke.com/", {
+          headers: { Accept: "application/json" }
+        });
+        const data = await res.json();
+        jokeEl.textContent = data.joke;
+      } catch (err) {
+        jokeEl.textContent = "Oops! Couldn't load a joke right now.";
+      }
+    }
+
+    function copyJoke() {
+      navigator.clipboard.writeText(jokeEl.textContent)
+        .then(() => alert("Joke copied!"))
+        .catch(() => alert("Copy failed."));
+    }
+
+    function shareJoke() {
+      if (navigator.share) {
+        navigator.share({
+          title: "Joke of the Day",
+          text: jokeEl.textContent,
+          url: location.href
+        });
+      } else {
+        alert("Sharing not supported in this browser.");
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+      localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
+    }
+
+    // Load theme preference
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+
+    fetchJoke();
+  </script>
+</body>
+</html>
